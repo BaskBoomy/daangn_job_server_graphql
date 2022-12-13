@@ -1,13 +1,20 @@
 const {buildSchema}  = require("graphql");
 
 module.exports = buildSchema(`
-        type Event {
+        type Job {
             _id: ID!
             title: String!
-            description: String!
-            price: Float!
+            place: String!
+            updatedFromUser: Boolean!
+            salary: String!
+            pay: String!
             date: String!
-            creator: User!
+            time: String!
+            images: [String!]!
+            detailcontent: String!
+            workCategory: [String!]!
+            isShortJob: Boolean!
+            jobOfferer: User!
         }
 
         type User {
@@ -19,15 +26,22 @@ module.exports = buildSchema(`
             name: String
             selfIntroduction: String
             careers: [String]
-            createdEvents: [Event!]!
+            createdJobs: [Job!]!
         }
 
 
-        input EventInput {
+        input JobInput {
             title: String!
-            description: String!
-            price: Float!
+            place: String!
+            updatedFromUser: Boolean!
+            salary: String!
+            pay: String!
             date: String!
+            time: String!
+            images: [String!]!
+            detailcontent: String!
+            workCategory: [String!]!
+            isShortJob: Boolean!
         }
 
         input UserInput {
@@ -36,11 +50,11 @@ module.exports = buildSchema(`
         }
 
         type RootQuery {
-            events: [Event!]!
+            jobs: [Job!]!
         }
 
         type RootMutation {
-            createEvent(eventInput: EventInput): Event
+            createJob(jobInput: JobInput): Job
             createUser(userInput: UserInput): User
         }
 

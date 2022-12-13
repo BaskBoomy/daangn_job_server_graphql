@@ -26,10 +26,10 @@ const userSchema = new Schema({
 	careers :  {
         type: [],
     },
-    createdEvents: [
+    createdJobs: [
         {
             type: Schema.Types.ObjectId,
-            ref: 'Event'
+            ref: 'JobsSQL'
         }
     ]
 })

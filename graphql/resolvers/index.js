@@ -1,15 +1,14 @@
-const Event = require("../../models/event.js");
+const Job = require("../../models/job.js");
 const User = require("../../models/user.js");
 
-const events = async eventIds => {
+const jobs = async jobIds => {
     try {
-        const events = await Event.find({ _id: { $in: eventIds } });
-        return events.map(event => {
+        const jobs = await Job.find({ _id: { $in: jobIds } });
+        return jobs.map(job => {
             return {
-                ...event._doc,
-                _id: event.id,
-                date: new Date(event._doc.date).toISOString(),
-                creator: user.bind(this, event.creator)
+                ...job._doc,
+                _id: job.id,
+                jobOfferer: user.bind(this, job.jobOfferer)
             };
         });
     } catch (err) {
@@ -24,7 +23,7 @@ const user = async userId => {
         return {
             ...user._doc,
             _id: user.id,
-            createdEvents: events.bind(this, user._doc.createdEvents)
+            createdJobs: jobs.bind(this, user._doc.createdJobs)
         };
     } catch (err) {
         console.log(err);
@@ -32,15 +31,14 @@ const user = async userId => {
     }
 }
 module.exports = {
-    events: async () => {
+    jobs: async () => {
         try {
-            const events = await Event.find();
-            return events.map(event => {
+            const jobs = await Job.find();
+            return jobs.map(job => {
                 return {
-                    ...event._doc,
-                    _id: event.id,
-                    date: new Date(event._doc.date).toISOString(),
-                    creator: user.bind(this, event._doc.creator)
+                    ...job._doc,
+                    _id: job.id,
+                    jobOfferer: user.bind(this, job._doc.jobOfferer)
                 };
             });
         } catch (err) {
@@ -48,33 +46,40 @@ module.exports = {
             throw err;
         };
     },
-    createEvent: async args => {
-        const event = new Event({
-            title: args.eventInput.title,
-            description: args.eventInput.description,
-            price: +args.eventInput.price,
-            date: new Date(args.eventInput.date),
-            creator: '639754d94e76ba839166c910'
+    createJob: async args => {
+        const job = new Job({
+            title: args.jobInput.title,
+            place: args.jobInput.place,
+            updatedFromUser: args.jobInput.updatedFromUser,
+            salary: args.jobInput.salary,
+            pay: args.jobInput.pay,
+            date: args.jobInput.date,
+            time: args.jobInput.time,
+            images: args.jobInput.images,
+            detailcontent: args.jobInput.detailcontent,
+            workCategory: args.jobInput.workCategory,
+            isShortJob: args.jobInput.isShortJob,
+            jobOfferer: '63980f7f9a60569d98a73040'
         })
 
-        let createdEvent;
+        let createdJob;
         try {
-            const result = await event.save();
-            createdEvent = {
-                ...result._doc,
-                _id: event._doc._id.toString(),
-                date: new Date(event._doc.date).toISOString(),
-                creator: user.bind(this.result._doc.creator)
+            const result = await job.save();
+            createdJob = {
+                ...result,
+                _id: job._id.toString(),
+                jobOfferer: user.bind(result.jobOfferer)
             };
 
-            const isExistUser = await User.findById('639754d94e76ba839166c910')
+            const isExistUser = await User.findById('63980f7f9a60569d98a73040')
             if (!isExistUser) {
                 throw new Error('User is not exists');
             }
+            console.log(isExistUser);
 
-            isExistUser.createdEvents.push(event);
+            isExistUser.createdJobs.push(job);
             await isExistUser.save();
-            return createdEvent;
+            return createdJob;
         } catch (err) {
             console.log(err);
             throw err;
@@ -90,7 +95,7 @@ module.exports = {
 
             const user = new User({
                 phoneNumber: args.userInput.phoneNumber,
-                nickname: args.userInput.nickname,
+                nickname: args.userInput.nickname
             });
             const result = await user.save();
             return { ...result._doc, _id: result.id }
