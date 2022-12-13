@@ -29,7 +29,7 @@ const userSchema = new Schema({
     createdJobs: [
         {
             type: Schema.Types.ObjectId,
-            ref: 'JobsSQL'
+            ref: 'JobsGQL'
         }
     ]
 })

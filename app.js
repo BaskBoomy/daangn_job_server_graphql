@@ -1,15 +1,20 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
 const {graphqlHTTP } = require('express-graphql');
 const mongoose = require("mongoose");
 
 const graphQLSchema = require('./graphql/schema/index.js');
 const graphQLResolvers = require("./graphql/resolvers/index.js");
+const isAuth = require('./middleware/auth.js');
+const { config } = require("./config.js");
 
 const app = express();
 
 app.use(bodyParser.json());
+app.use(cookieParser());
 
+app.use(isAuth);
 app.use('/daangn-job', graphqlHTTP({
     schema:graphQLSchema,
     rootValue: graphQLResolvers,
@@ -17,10 +22,10 @@ app.use('/daangn-job', graphqlHTTP({
 }));
 
 mongoose.connect(
-    `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASSWORD}@cluster0.kwnp9ow.mongodb.net/${process.env.MONGO_DB}?retryWrites=true&w=majority`)
+    config.db.host)
     .then(()=>{
-        app.listen(3000, ()=>{
-            console.log(`Listening on port ${3000}`)
+        app.listen(config.host.port, ()=>{
+            console.log(`Listening on port ${config.host.port}`)
         })
     })
     .catch(err=>{

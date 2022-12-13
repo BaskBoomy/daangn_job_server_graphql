@@ -1,6 +1,13 @@
-const {buildSchema}  = require("graphql");
+const {buildSchema} = require("graphql");
 
 module.exports = buildSchema(`
+        type Apply{
+            _id: ID!
+            job: Job!
+            user: User!
+            createdAt: String!
+            updatedAt: String!
+        }
         type Job {
             _id: ID!
             title: String!
@@ -15,6 +22,7 @@ module.exports = buildSchema(`
             workCategory: [String!]!
             isShortJob: Boolean!
             jobOfferer: User!
+            
         }
 
         type User {
@@ -29,6 +37,10 @@ module.exports = buildSchema(`
             createdJobs: [Job!]!
         }
 
+        type AuthData{
+            userId: String!
+            token: String!
+        }
 
         input JobInput {
             title: String!
@@ -51,11 +63,16 @@ module.exports = buildSchema(`
 
         type RootQuery {
             jobs: [Job!]!
+            applys: [Apply!]!
+            login(phoneNumber: String!): AuthData
         }
 
         type RootMutation {
             createJob(jobInput: JobInput): Job
+            deleteJob(jobId: String): Job!
             createUser(userInput: UserInput): User
+            applyJob(jobId: ID!): Apply!
+            cancelApply(applyId: ID!): Job!
         }
 
         schema {
