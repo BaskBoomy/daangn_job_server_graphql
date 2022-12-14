@@ -1,0 +1,57 @@
+import { RootMutationApplyJobArgs, RootMutationCancelApplyArgs } from "../../../gql-types.js";
+import Apply from "../../models/apply.js";
+import Job, { IJob } from "../../models/job.js";
+import { RequestWithAuth } from "../../types/auth.js";
+import { transformApplyOrLike, transformJob } from "./merge.js";
+
+const applyResolvers = {
+    applys: async (args:any,req:RequestWithAuth) => {
+        if(!req.isAuth){
+            throw new Error("Authenticated Error");
+        }
+        try{
+            const applys = await Apply.find();
+            return applys.map(transformApplyOrLike)
+        }catch(err){
+            throw err;
+        }
+    },
+    applyJob: async ({jobId}:RootMutationApplyJobArgs,req:RequestWithAuth) => {
+        if(!req.isAuth){
+            throw new Error("Authenticated Error");
+        }
+        try{
+            const job = await Job.findOne({_id:jobId});
+            const isApplied = await Apply.findOne({job:job,user:req.userId});
+            if(isApplied){
+                throw new Error("You have already applied this job");
+            }
+            const apply = new Apply({
+                job: job,
+                user:req.userId
+            });
+
+            const result = await apply.save();
+            return transformApplyOrLike(result);
+        }catch(err){
+            throw err;
+        }
+    },
+    cancelApply: async ({applyId}:RootMutationCancelApplyArgs,req:RequestWithAuth) => {
+        if(!req.isAuth){
+            throw new Error("Authenticated Error");
+        }
+        try{
+            const apply = await Apply.findById(applyId).populate<IJob>('job');
+            if(!apply){
+                throw new Error("Apply is not exist");
+            }
+            const job = transformJob(apply.job as IJob);
+            await Apply.deleteOne({_id: applyId});
+            return job;
+        }catch(err){
+            throw err;
+        }
+    }
+}
+export default applyResolvers;

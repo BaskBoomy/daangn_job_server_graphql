@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "ES6",                          
+    "module": "ES2015",                       
+    "rootDir": "./src",                       
+    "moduleResolution": "node",               
+    "outDir": "./dist",                       
+    "esModuleInterop": true,                  
+    "skipLibCheck": true,                     
+    "forceConsistentCasingInFileNames": true, 
+    "noImplicitAny": true,                    
+    "strict": true, 
+    "allowJs": true,
+    "typeRoots": ["./node_modules/@types"],
+  }
+}
