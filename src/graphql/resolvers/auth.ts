@@ -2,8 +2,8 @@ import User from "../../models/user.js";
 import jwt from "jsonwebtoken";
 import { config } from "../../config.js";
 import { user } from "./merge.js";
-import { RequestWithAuth } from "../../types/auth.js";
 import { RootMutationCreateUserArgs, RootQueryLoginArgs, RootQueryUserArgs, UserInput } from "../../../gql-types.js";
+import { Request } from "express";
 
 function createJwtToken(id:string) {
     return jwt.sign({ id }, config.jwt.secretKey, { expiresIn: config.jwt.expiresInSec });
@@ -43,7 +43,7 @@ const authResolver = {
         }
     },
     user: ({userId}:RootQueryUserArgs) => user(userId),
-    me: async (args:any, req:RequestWithAuth) => {
+    me: async (args:any, req:Request) => {
         if(!req.userId){
             throw new Error("Can not find User");
         }

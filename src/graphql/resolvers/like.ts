@@ -1,12 +1,12 @@
 import { RootMutationLikeJobArgs,RootMutationUnLikeJobArgs } from "../../../gql-types.js";
 import Like from "../../models/like.js";
 import Job, { IJob } from "../../models/job.js";
-import { RequestWithAuth } from "../../types/auth.js";
 import { transformApplyOrLike, transformJob } from "./merge.js";
 import User from "../../models/user.js";
+import { Request } from "express";
 
 const likeResolvers = {
-    likeJob: async ({jobId}:RootMutationLikeJobArgs,req:RequestWithAuth) => {
+    likeJob: async ({jobId}:RootMutationLikeJobArgs,req:Request) => {
         if(!req.isAuth){
             throw new Error("Authenticated Error");
         }
@@ -39,7 +39,7 @@ const likeResolvers = {
             throw err;
         }
     },
-    unLikeJob: async ({jobId}:RootMutationUnLikeJobArgs,req:RequestWithAuth) => {
+    unLikeJob: async ({jobId}:RootMutationUnLikeJobArgs,req:Request) => {
         
         if(!req.isAuth){
             throw new Error("Authenticated Error");

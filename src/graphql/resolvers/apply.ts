@@ -1,12 +1,12 @@
+import { Request } from "express";
 import { RootMutationApplyJobArgs, RootMutationCancelApplyArgs } from "../../../gql-types.js";
 import Apply from "../../models/apply.js";
 import Job, { IJob } from "../../models/job.js";
 import User from "../../models/user.js";
-import { RequestWithAuth } from "../../types/auth.js";
 import { transformApplyOrLike, transformJob } from "./merge.js";
 
 const applyResolvers = {
-    applys: async (args:any,req:RequestWithAuth) => {
+    applys: async (args:any,req:Request) => {
         if(!req.isAuth){
             throw new Error("Authenticated Error");
         }
@@ -17,7 +17,7 @@ const applyResolvers = {
             throw err;
         }
     },
-    applyJob: async ({jobId}:RootMutationApplyJobArgs,req:RequestWithAuth) => {
+    applyJob: async ({jobId}:RootMutationApplyJobArgs,req:Request) => {
         if(!req.isAuth){
             throw new Error("Authenticated Error");
         }
@@ -46,7 +46,7 @@ const applyResolvers = {
             throw err;
         }
     },
-    cancelApply: async ({applyId}:RootMutationCancelApplyArgs,req:RequestWithAuth) => {
+    cancelApply: async ({applyId}:RootMutationCancelApplyArgs,req:Request) => {
         if(!req.isAuth){
             throw new Error("Authenticated Error");
         }

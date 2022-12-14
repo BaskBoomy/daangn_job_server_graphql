@@ -1,8 +1,8 @@
 import { RootMutationCreateJobArgs, RootMutationDeleteJobArgs } from "../../../gql-types";
-import { RequestWithAuth } from "../../types/auth";
 import Job from "../../models/job.js";
 import User from "../../models/user.js";
 import {transformJob} from "./merge.js";
+import { Request } from "express";
 
 const jobResolver = {
     jobs: async () => {
@@ -14,7 +14,7 @@ const jobResolver = {
             throw err;
         };
     },
-    createJob: async ({jobInput}:RootMutationCreateJobArgs, req:RequestWithAuth) => {
+    createJob: async ({jobInput}:RootMutationCreateJobArgs, req:Request) => {
         if(!req.isAuth){
             throw new Error("Authenticated Error");
         }
