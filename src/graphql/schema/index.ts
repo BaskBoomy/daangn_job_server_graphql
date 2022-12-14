@@ -41,6 +41,8 @@ export default buildSchema(`
             selfIntroduction: String
             careers: [String]
             createdJobs: [Job!]!
+            appliedJobs: [Job!]!
+            likedJobs: [Job!]!
         }
 
         type AuthData{

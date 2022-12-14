@@ -27,11 +27,10 @@ const userLoader = new DataLoader<string, (IUser| undefined)>((userIds)=>{
 export const jobs = async (jobIds:[string]) => {
     try {
         const jobs = await JobModel.find({ _id: { $in: jobIds } });
-        //
+        jobLoader.clearAll();
         jobs.sort((a:IJob,b:IJob)=>{
             return jobIds.indexOf(a._id.toString()) - jobIds.indexOf(b._id.toString())
         })
-        // console.log(jobs, jobIds);
         return jobs.map(transformJob);
     } catch (err) {
         console.log(err);
@@ -52,10 +51,13 @@ export const singleJob = async (jobId:ObjectId) => {
 export const user = async (userId:ObjectId | string) => {
     try {
         const user = await userLoader.load(userId.toString());
+        userLoader.clearAll();
         return {
             ...user!._doc,
             _id: user!.id,
-            createdJobs: () => jobLoader.loadMany(user!._doc.createdJobs as unknown as string)
+            createdJobs: jobs.bind(this, user!._doc.createdJobs as [string]),
+            appliedJobs: jobs.bind(this, user!._doc.appliedJobs as [string]),
+            likedJobs:   jobs.bind(this, user!._doc.likedJobs as [string])
         };
     } catch (err) {
         console.log(err);

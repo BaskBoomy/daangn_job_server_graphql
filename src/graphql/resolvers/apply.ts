@@ -1,6 +1,7 @@
 import { RootMutationApplyJobArgs, RootMutationCancelApplyArgs } from "../../../gql-types.js";
 import Apply from "../../models/apply.js";
 import Job, { IJob } from "../../models/job.js";
+import User from "../../models/user.js";
 import { RequestWithAuth } from "../../types/auth.js";
 import { transformApplyOrLike, transformJob } from "./merge.js";
 
@@ -26,6 +27,14 @@ const applyResolvers = {
             if(isApplied){
                 throw new Error("You have already applied this job");
             }
+
+            const isExistUser = await User.findById(req.userId)
+            if (!isExistUser) {
+                throw new Error('User is not exists');
+            }
+            isExistUser.appliedJobs.push(jobId);
+            await isExistUser.save();
+            
             const apply = new Apply({
                 job: job,
                 user:req.userId

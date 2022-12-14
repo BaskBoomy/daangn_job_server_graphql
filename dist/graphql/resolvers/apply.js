@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 import Apply from "../../models/apply.js";
 import Job from "../../models/job.js";
+import User from "../../models/user.js";
 import { transformApplyOrLike, transformJob } from "./merge.js";
 const applyResolvers = {
     applys: (args, req) => __awaiter(void 0, void 0, void 0, function* () {
@@ -33,6 +34,12 @@ const applyResolvers = {
             if (isApplied) {
                 throw new Error("You have already applied this job");
             }
+            const isExistUser = yield User.findById(req.userId);
+            if (!isExistUser) {
+                throw new Error('User is not exists');
+            }
+            isExistUser.appliedJobs.push(jobId);
+            yield isExistUser.save();
             const apply = new Apply({
                 job: job,
                 user: req.userId

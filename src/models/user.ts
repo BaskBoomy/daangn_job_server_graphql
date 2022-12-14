@@ -9,6 +9,8 @@ export interface IUser extends DocumentResult<IUser> {
     selfIntroduction: string;
     careers: [string];
     createdJobs: [ObjectId|string];
+    appliedJobs: [ObjectId|string];
+    likedJobs: [ObjectId|string];
 }
 const userSchema = new Schema<IUser>({
 	phoneNumber: {
@@ -38,6 +40,18 @@ const userSchema = new Schema<IUser>({
         {
             type: Types.ObjectId,
             ref: 'JobsGQL'
+        }
+    ],
+    appliedJobs: [
+        {
+            type: Types.ObjectId,
+            ref: 'Apply'
+        }
+    ],
+    likedJobs: [
+        {
+            type: Types.ObjectId,
+            ref: 'Like'
         }
     ]
 })

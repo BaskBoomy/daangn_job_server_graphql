@@ -3,6 +3,7 @@ import Like from "../../models/like.js";
 import Job, { IJob } from "../../models/job.js";
 import { RequestWithAuth } from "../../types/auth.js";
 import { transformApplyOrLike, transformJob } from "./merge.js";
+import User from "../../models/user.js";
 
 const likeResolvers = {
     likeJob: async ({jobId}:RootMutationLikeJobArgs,req:RequestWithAuth) => {
@@ -19,6 +20,14 @@ const likeResolvers = {
             if(isLiked){
                 throw new Error("You have already liked this job");
             }
+
+            const isExistUser = await User.findById(req.userId)
+            if (!isExistUser) {
+                throw new Error('User is not exists');
+            }
+            isExistUser.likedJobs.push(jobId);
+            await isExistUser.save();
+
             const like = new Like({
                 job: jobId,
                 user:req.userId

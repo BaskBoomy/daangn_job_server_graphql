@@ -28,6 +28,18 @@ const userSchema = new Schema({
             type: Types.ObjectId,
             ref: 'JobsGQL'
         }
+    ],
+    appliedJobs: [
+        {
+            type: Types.ObjectId,
+            ref: 'Apply'
+        }
+    ],
+    likedJobs: [
+        {
+            type: Types.ObjectId,
+            ref: 'Like'
+        }
     ]
 });
 export default model('User', userSchema);

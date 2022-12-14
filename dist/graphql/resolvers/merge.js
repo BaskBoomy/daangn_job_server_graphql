@@ -28,11 +28,10 @@ const userLoader = new DataLoader((userIds) => {
 export const jobs = (jobIds) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const jobs = yield JobModel.find({ _id: { $in: jobIds } });
-        //
+        jobLoader.clearAll();
         jobs.sort((a, b) => {
             return jobIds.indexOf(a._id.toString()) - jobIds.indexOf(b._id.toString());
         });
-        // console.log(jobs, jobIds);
         return jobs.map(transformJob);
     }
     catch (err) {
@@ -52,7 +51,8 @@ export const singleJob = (jobId) => __awaiter(void 0, void 0, void 0, function* 
 export const user = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const user = yield userLoader.load(userId.toString());
-        return Object.assign(Object.assign({}, user._doc), { _id: user.id, createdJobs: () => jobLoader.loadMany(user._doc.createdJobs) });
+        userLoader.clearAll();
+        return Object.assign(Object.assign({}, user._doc), { _id: user.id, createdJobs: jobs.bind(this, user._doc.createdJobs), appliedJobs: jobs.bind(this, user._doc.appliedJobs), likedJobs: jobs.bind(this, user._doc.likedJobs) });
     }
     catch (err) {
         console.log(err);
