@@ -1,9 +1,10 @@
 import { Request } from "express";
-import { RootQueryJobArgs } from './../../../gql-types.d';
+import { RootQueryJobArgs, RootQuerySearchJobArgs } from './../../../gql-types.d';
 import { RootMutationCreateJobArgs, RootMutationDeleteJobArgs } from "../../../gql-types";
 import Job from "../../models/job.js";
 import User from "../../models/user.js";
-import {transformJob} from "./merge.js";
+import {transformJob, user} from "./merge.js";
+import { getSearchSetting } from "../../service/search.js";
 
 const jobResolver = {
     jobs: async () => {
@@ -19,6 +20,7 @@ const jobResolver = {
         if(!req.isAuth){
             throw new Error("Authenticated Error");
         }
+        
         const job = new Job({
             title: jobInput!.title,
             place: jobInput!.place,
@@ -26,7 +28,7 @@ const jobResolver = {
             salary: jobInput!.salary,
             pay: jobInput!.pay,
             date: jobInput!.date,
-            time: jobInput!.time,
+            workTime: jobInput!.workTime,
             images: jobInput!.images,
             detailcontent: jobInput!.detailcontent,
             workCategory: jobInput!.workCategory,
@@ -34,6 +36,7 @@ const jobResolver = {
             jobOfferer: req.userId
         })
 
+        
         let createdJob;
         try {
             const result = await job.save();
@@ -79,6 +82,47 @@ const jobResolver = {
         }catch(err){
             throw err;
         }
+    },
+    searchJob: async({searchType}:RootQuerySearchJobArgs) => {
+        try {
+            //조건이 존재하지 않을 경우
+            if (searchType == null) {
+                console.log('조건을 설정해주세요.');
+                
+                const jobs = await Job.find();
+                return jobs.map(transformJob);
+            } else {
+                const query = getSearchSetting(searchType);
+                const pipeline = [
+                    {
+                        "$search": {
+                            "index": "searchJobgql",
+                            "compound": {
+                                "must": query
+                            }
+                        }
+                    }
+                ]
+
+                //Get Result
+                return await Job
+                    .aggregate(pipeline)
+                    .then((result) => {
+                        return result.map((data)=>{
+                            return {
+                                ...data,
+                                jobOfferer: user.bind(this, data.jobOfferer)
+                            }
+                        })
+                    })
+                    .catch((err:any) => {
+                        console.log(err);
+                    })
+            }
+        }catch(error) {
+            
+        }
     }
+
 }
 export default jobResolver;

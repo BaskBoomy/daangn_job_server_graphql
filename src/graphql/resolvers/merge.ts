@@ -50,8 +50,8 @@ export const singleJob = async (jobId:ObjectId) => {
 
 export const user = async (userId:ObjectId | string) => {
     try {
-        const user = await userLoader.load(userId.toString());
-        userLoader.clearAll();
+        // const user = await userLoader.load(userId.toString());
+        const user = await User.findById(userId);
         return {
             ...user!._doc,
             _id: user!.id,
@@ -68,7 +68,7 @@ export const user = async (userId:ObjectId | string) => {
 export const transformJob = (job:IJob):Job=> {
     return {
         ...job._doc,
-        _id: job.id as unknown as ObjectId,
+        _id: job.id,
         jobOfferer: user.bind(this, job.jobOfferer) // user(job을 생성한 userId) 함수 바인딩
     }
 }

@@ -2,7 +2,7 @@ import { ObjectId,Schema, Types, model } from "mongoose";
 import { DocumentResult } from "../types/mongoose";
 export interface IJob extends DocumentResult<IJob> {
     title: string;
-    time: string;
+    workTime: string;
     place: string;
     updatedFromUser: boolean;
     salary: string;
@@ -44,6 +44,10 @@ const jobSchema = new Schema<IJob>({
         required: true
     },
     detailcontent: {
+        type: String,
+        required: true
+    },
+    workTime: {
         type: String,
         required: true
     },

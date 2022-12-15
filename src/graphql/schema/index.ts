@@ -23,7 +23,7 @@ export default buildSchema(`
             salary: String!
             pay: String!
             date: String!
-            time: String!
+            workTime: String
             images: [String!]!
             detailcontent: String!
             workCategory: [String!]!
@@ -60,7 +60,7 @@ export default buildSchema(`
             salary: String!
             pay: String!
             date: String!
-            time: String!
+            workTime: String!
             images: [String!]!
             detailcontent: String!
             workCategory: [String!]!
@@ -82,6 +82,20 @@ export default buildSchema(`
             careers: [String]
         }
 
+        input TimeSpan{
+            startTime: String
+            endTime: String
+        }
+        
+        input SearchCategory{
+            isShortJob: Boolean
+            place: [String]
+            workCategory: [String]
+            dates: [String]
+            time: TimeSpan
+            text: String
+        }
+        
         type RootQuery {
             jobs: [Job!]!
             applys: [Apply!]!
@@ -89,6 +103,7 @@ export default buildSchema(`
             user(userId: String!): User!
             job(jobId: String!): Job!
             me: User!
+            searchJob(searchType: SearchCategory):[Job]!
         }
 
         type RootMutation {

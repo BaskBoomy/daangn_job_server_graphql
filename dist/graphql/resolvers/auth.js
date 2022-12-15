@@ -48,15 +48,6 @@ const authResolver = {
             throw new Error("Authentication Error");
         }
         try {
-            // const updateData = {
-            //     phoneNumber: userInput?.phoneNumber,
-            //     nickname: userInput?.nickname,
-            //     borndate: userInput?.borndate,
-            //     gender: userInput?.gender,
-            //     name: userInput?.name,
-            //     selfIntroduction: userInput?.selfIntroduction,
-            //     careers: userInput?.careers,
-            // }
             return await User.findOneAndUpdate({ _id: req.userId }, { $set: userInput }, { returnDocument: 'after' })
                 .then((result) => {
                 console.log(result);

@@ -32,6 +32,10 @@ const jobSchema = new Schema({
         type: String,
         required: true
     },
+    workTime: {
+        type: String,
+        required: true
+    },
     workCategory: {
         type: [String],
         required: true

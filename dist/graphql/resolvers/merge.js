@@ -41,8 +41,8 @@ export const singleJob = async (jobId) => {
 };
 export const user = async (userId) => {
     try {
-        const user = await userLoader.load(userId.toString());
-        userLoader.clearAll();
+        // const user = await userLoader.load(userId.toString());
+        const user = await User.findById(userId);
         return Object.assign(Object.assign({}, user._doc), { _id: user.id, createdJobs: jobs.bind(this, user._doc.createdJobs), appliedJobs: jobs.bind(this, user._doc.appliedJobs), likedJobs: jobs.bind(this, user._doc.likedJobs) });
     }
     catch (err) {

@@ -1,4 +1,5 @@
-import { ObjectId } from 'mongoose';
+import { ObjectId } from "mongoose";
+
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -40,10 +41,10 @@ export type Job = {
   pay: Scalars['String'];
   place: Scalars['String'];
   salary: Scalars['String'];
-  time: Scalars['String'];
   title: Scalars['String'];
   updatedFromUser: Scalars['Boolean'];
   workCategory: Array<Scalars['String']>;
+  workTime: Scalars['String'];
 };
 
 export type JobInput = {
@@ -54,10 +55,10 @@ export type JobInput = {
   pay: Scalars['String'];
   place: Scalars['String'];
   salary: Scalars['String'];
-  time: Scalars['String'];
   title: Scalars['String'];
   updatedFromUser: Scalars['Boolean'];
   workCategory: Array<Scalars['String']>;
+  workTime: Scalars['String'];
 };
 
 export type Like = {
@@ -147,6 +148,7 @@ export type RootQuery = {
   jobs: Array<Job>;
   login?: Maybe<AuthData>;
   me: User;
+  searchJob: Array<Maybe<Job>>;
   user: User;
 };
 
@@ -161,8 +163,27 @@ export type RootQueryLoginArgs = {
 };
 
 
+export type RootQuerySearchJobArgs = {
+  searchType?: InputMaybe<SearchCategory>;
+};
+
+
 export type RootQueryUserArgs = {
   userId: Scalars['String'];
+};
+
+export type SearchCategory = {
+  dates?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  isShortJob?: InputMaybe<Scalars['Boolean']>;
+  place?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  text?: InputMaybe<Scalars['String']>;
+  time?: InputMaybe<TimeSpan>;
+  workCategory?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+};
+
+export type TimeSpan = {
+  endTime?: InputMaybe<Scalars['String']>;
+  startTime?: InputMaybe<Scalars['String']>;
 };
 
 export type User = {

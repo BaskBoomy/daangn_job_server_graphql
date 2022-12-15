@@ -1,6 +1,7 @@
 import Job from "../../models/job.js";
 import User from "../../models/user.js";
-import { transformJob } from "./merge.js";
+import { transformJob, user } from "./merge.js";
+import { getSearchSetting } from "../../service/search.js";
 const jobResolver = {
     jobs: async () => {
         try {
@@ -24,7 +25,7 @@ const jobResolver = {
             salary: jobInput.salary,
             pay: jobInput.pay,
             date: jobInput.date,
-            time: jobInput.time,
+            workTime: jobInput.workTime,
             images: jobInput.images,
             detailcontent: jobInput.detailcontent,
             workCategory: jobInput.workCategory,
@@ -73,6 +74,42 @@ const jobResolver = {
         }
         catch (err) {
             throw err;
+        }
+    },
+    searchJob: async ({ searchType }) => {
+        try {
+            //조건이 존재하지 않을 경우
+            if (searchType == null) {
+                console.log('조건을 설정해주세요.');
+                const jobs = await Job.find();
+                return jobs.map(transformJob);
+            }
+            else {
+                const query = getSearchSetting(searchType);
+                const pipeline = [
+                    {
+                        "$search": {
+                            "index": "searchJobgql",
+                            "compound": {
+                                "must": query
+                            }
+                        }
+                    }
+                ];
+                //Get Result
+                return await Job
+                    .aggregate(pipeline)
+                    .then((result) => {
+                    return result.map((data) => {
+                        return Object.assign(Object.assign({}, data), { jobOfferer: user.bind(this, data.jobOfferer) });
+                    });
+                })
+                    .catch((err) => {
+                    console.log(err);
+                });
+            }
+        }
+        catch (error) {
         }
     }
 };
