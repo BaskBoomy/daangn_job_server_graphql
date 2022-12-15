@@ -96,6 +96,18 @@ export default buildSchema(`
             text: String
         }
         
+        input Coordinate {
+            x: String!
+            y: String!
+        }
+        type Location {
+            address: String
+            directDistance: Float
+            X: String
+            Y: String
+            currentX: Float
+            currentY: Float
+        }
         type RootQuery {
             jobs: [Job!]!
             applys: [Apply!]!
@@ -104,6 +116,8 @@ export default buildSchema(`
             job(jobId: String!): Job!
             me: User!
             searchJob(searchType: SearchCategory):[Job]!
+            getNearAddress(coordinate: Coordinate!):[Location]!
+            searchLocation(searchText: String!):[Location]!
         }
 
         type RootMutation {

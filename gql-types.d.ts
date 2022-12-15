@@ -29,6 +29,11 @@ export type AuthData = {
   userId: Scalars['String'];
 };
 
+export type Coordinate = {
+  x: Scalars['String'];
+  y: Scalars['String'];
+};
+
 export type Job = {
   __typename?: 'Job';
   _id: Scalars['ID'];
@@ -44,7 +49,7 @@ export type Job = {
   title: Scalars['String'];
   updatedFromUser: Scalars['Boolean'];
   workCategory: Array<Scalars['String']>;
-  workTime: Scalars['String'];
+  workTime?: Maybe<Scalars['String']>;
 };
 
 export type JobInput = {
@@ -68,6 +73,16 @@ export type Like = {
   job: Job;
   updatedAt: Scalars['String'];
   user: User;
+};
+
+export type Location = {
+  __typename?: 'Location';
+  X?: Maybe<Scalars['String']>;
+  Y?: Maybe<Scalars['String']>;
+  address?: Maybe<Scalars['String']>;
+  currentX?: Maybe<Scalars['Float']>;
+  currentY?: Maybe<Scalars['Float']>;
+  directDistance?: Maybe<Scalars['Float']>;
 };
 
 export type Result = {
@@ -144,12 +159,19 @@ export type RootMutationVerifySmsCodeArgs = {
 export type RootQuery = {
   __typename?: 'RootQuery';
   applys: Array<Apply>;
+  getNearAddress: Array<Maybe<Location>>;
   job: Job;
   jobs: Array<Job>;
   login?: Maybe<AuthData>;
   me: User;
   searchJob: Array<Maybe<Job>>;
+  searchLocation: Array<Maybe<Location>>;
   user: User;
+};
+
+
+export type RootQueryGetNearAddressArgs = {
+  coordinate: Coordinate;
 };
 
 
@@ -165,6 +187,11 @@ export type RootQueryLoginArgs = {
 
 export type RootQuerySearchJobArgs = {
   searchType?: InputMaybe<SearchCategory>;
+};
+
+
+export type RootQuerySearchLocationArgs = {
+  searchText: Scalars['String'];
 };
 
 
