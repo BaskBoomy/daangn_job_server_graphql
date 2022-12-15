@@ -28,6 +28,7 @@ export default buildSchema(`
             workCategory: [String!]!
             isShortJob: Boolean!
             jobOfferer: User!
+            isUserLike: Boolean
         }
         type User {
             _id : ID! 
@@ -75,6 +76,7 @@ export default buildSchema(`
             applys: [Apply!]!
             login(phoneNumber: String!): AuthData
             user(userId: String!): User!
+            job(jobId: String!): Job!
             me: User!
         }
 

@@ -1,3 +1,5 @@
+import { ObjectId } from "mongoose";
+
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -34,6 +36,7 @@ export type Job = {
   detailcontent: Scalars['String'];
   images: Array<Scalars['String']>;
   isShortJob: Scalars['Boolean'];
+  isUserLike?: Maybe<Scalars['Boolean']>;
   jobOfferer: any;
   pay: Scalars['String'];
   place: Scalars['String'];
@@ -135,10 +138,16 @@ export type RootMutationVerifySmsCodeArgs = {
 export type RootQuery = {
   __typename?: 'RootQuery';
   applys: Array<Apply>;
+  job: Job;
   jobs: Array<Job>;
   login?: Maybe<AuthData>;
   me: User;
   user: User;
+};
+
+
+export type RootQueryJobArgs = {
+  jobId: Scalars['String'];
 };
 
 

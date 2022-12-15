@@ -1,8 +1,10 @@
+import { Request } from "express";
+import { RootQueryJobArgs } from './../../../gql-types.d';
 import { RootMutationCreateJobArgs, RootMutationDeleteJobArgs } from "../../../gql-types";
 import Job from "../../models/job.js";
 import User from "../../models/user.js";
+import Like from '../../models/like.js';
 import {transformJob} from "./merge.js";
-import { Request } from "express";
 
 const jobResolver = {
     jobs: async () => {
@@ -59,6 +61,22 @@ const jobResolver = {
             }
             await Job.deleteOne({_id:jobId});
             return job;
+        }catch(err){
+            throw err;
+        }
+    },
+    job: async ({jobId}:RootQueryJobArgs,req: Request) => {
+        try{
+            const job = await Job.findById(jobId);
+            if(!job){
+                throw new Error("Job is not exist");
+            }
+            //현재 user가 이 게시글을 좋아요 하고 있는지 확인
+            const isUserLike = await User.findOne({likedJobs:jobId});
+            return {
+                ...job._doc,
+                isUserLike: isUserLike ? true : false
+            };
         }catch(err){
             throw err;
         }

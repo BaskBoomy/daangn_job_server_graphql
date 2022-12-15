@@ -57,9 +57,3 @@ export const transformJob = (job) => {
 export const transformApplyOrLike = (result) => {
     return Object.assign(Object.assign({}, result._doc), { _id: result.id, user: user.bind(this, result._doc.user), job: singleJob.bind(this, result._doc.job), createdAt: dateToString(result._doc.createdAt), updatedAt: dateToString(result._doc.updatedAt) });
 };
-export const transformUser = (user) => {
-    // return {
-    //     ...user._doc,
-    //     _id: user.id,
-    // }
-};

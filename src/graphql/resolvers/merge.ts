@@ -82,9 +82,3 @@ export const transformApplyOrLike = (result:IApply|ILike) => {
         updatedAt: dateToString(result._doc.updatedAt),
     }
 }
-export const transformUser = (user:IUser)=> {
-    // return {
-    //     ...user._doc,
-    //     _id: user.id,
-    // }
-}

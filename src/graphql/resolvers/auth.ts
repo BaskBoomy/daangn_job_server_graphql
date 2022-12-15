@@ -1,6 +1,6 @@
 import { Request } from "express";
 import jwt from "jsonwebtoken";
-import User from "../../models/user.js";
+import User, { IUser } from "../../models/user.js";
 import { config } from "../../config.js";
 import { user } from "./merge.js";
 import { RootMutationCreateUserArgs, RootQueryLoginArgs, RootMutationSendSmsCodeArgs, RootQueryUserArgs, RootMutationVerifySmsCodeArgs } from "../../../gql-types.js";
@@ -34,6 +34,7 @@ const authResolver = {
             if(!user){
                 throw new Error('User does not exist'); 
             }
+            
             req.session.user = user;
             const token = createJwtToken(user.id);
             return {

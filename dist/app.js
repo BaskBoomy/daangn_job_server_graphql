@@ -13,14 +13,15 @@ import { createClient } from "redis";
 let RedisStore = connectRedis(session);
 export const redisClient = createClient({
     url: `redis://${config.redis.host}:${config.redis.port}`,
-    password: config.redis.password,
-    // legacyMode: true,
+    // password:config.redis.password,
+    legacyMode: true,
 });
 redisClient.connect()
     .then(() => {
     console.log("Redis Connected");
 });
 const app = express();
+app.use(express.urlencoded({ extended: true }));
 app.use(session({
     secret: 'secret',
     store: new RedisStore({

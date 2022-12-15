@@ -60,6 +60,20 @@ const jobResolver = {
         catch (err) {
             throw err;
         }
+    },
+    job: async ({ jobId }, req) => {
+        try {
+            const job = await Job.findById(jobId);
+            if (!job) {
+                throw new Error("Job is not exist");
+            }
+            //현재 user가 이 게시글을 좋아요 하고 있는지 확인
+            const isUserLike = await User.findOne({ likedJobs: jobId });
+            return Object.assign(Object.assign({}, job._doc), { isUserLike: isUserLike ? true : false });
+        }
+        catch (err) {
+            throw err;
+        }
     }
 };
 export default jobResolver;
