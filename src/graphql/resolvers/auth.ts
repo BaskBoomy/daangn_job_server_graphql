@@ -3,14 +3,15 @@ import jwt from "jsonwebtoken";
 import User, { IUser } from "../../models/user.js";
 import { config } from "../../config.js";
 import { user } from "./merge.js";
-import { RootMutationCreateUserArgs, RootQueryLoginArgs, RootMutationSendSmsCodeArgs, RootQueryUserArgs, RootMutationVerifySmsCodeArgs } from "../../../gql-types.js";
+import { RootMutationCreateUserArgs, RootQueryLoginArgs, RootMutationSendSmsCodeArgs, RootQueryUserArgs, RootMutationVerifySmsCodeArgs, RootMutationUpdateUserArgs } from "../../../gql-types.js";
 import { compareAuthCode, create6DigitCode, saveAuthCode, sendMessage } from "../../service/sms.js";
+import { ObjectId } from "mongoose";
 
 function createJwtToken(id:string) {
     return jwt.sign({ id }, config.jwt.secretKey, { expiresIn: config.jwt.expiresInSec });
 }
 const authResolver = {
-    createUser: async ({userInput}:RootMutationCreateUserArgs) => {
+    createUser: async ({userInput}:RootMutationCreateUserArgs, req: Request) => {
         try {
             const userIsExist = await User.findOne({ phoneNumber: userInput?.phoneNumber })
             if (userIsExist) {
@@ -21,7 +22,9 @@ const authResolver = {
                 phoneNumber: userInput?.phoneNumber,
                 nickname: userInput?.nickname
             });
-            const result = await user.save() as any;
+            
+            const result = await user.save() as IUser;
+            req.session.user = result;
             return { ...result._doc, _id: result.id }
         } catch (err) {
             console.log(err);
@@ -42,6 +45,37 @@ const authResolver = {
                 token,
             }
         }catch(err){
+            throw err;
+        }
+    },
+    updateUser: async ({userInput}:RootMutationUpdateUserArgs, req: Request) => {
+        if(!req.isAuth){
+            throw new Error("Authentication Error");
+        }
+        try {
+            // const updateData = {
+            //     phoneNumber: userInput?.phoneNumber,
+            //     nickname: userInput?.nickname,
+            //     borndate: userInput?.borndate,
+            //     gender: userInput?.gender,
+            //     name: userInput?.name,
+            //     selfIntroduction: userInput?.selfIntroduction,
+            //     careers: userInput?.careers,
+            // }
+            return await User.findOneAndUpdate(
+                {_id: req.userId},
+                {$set: userInput as IUser},
+                {returnDocument: 'after'}
+            )
+            .then((result:(IUser & { _id: ObjectId; }) | null) =>{
+                console.log(result);
+                
+                req.session.user = result as IUser;
+                return { ...result!._doc, _id: result!.id }
+            })
+
+        } catch (err) {
+            console.log(err);
             throw err;
         }
     },

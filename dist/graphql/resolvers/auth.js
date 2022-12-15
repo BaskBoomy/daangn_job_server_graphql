@@ -7,7 +7,7 @@ function createJwtToken(id) {
     return jwt.sign({ id }, config.jwt.secretKey, { expiresIn: config.jwt.expiresInSec });
 }
 const authResolver = {
-    createUser: async ({ userInput }) => {
+    createUser: async ({ userInput }, req) => {
         try {
             const userIsExist = await User.findOne({ phoneNumber: userInput === null || userInput === void 0 ? void 0 : userInput.phoneNumber });
             if (userIsExist) {
@@ -18,6 +18,7 @@ const authResolver = {
                 nickname: userInput === null || userInput === void 0 ? void 0 : userInput.nickname
             });
             const result = await user.save();
+            req.session.user = result;
             return Object.assign(Object.assign({}, result._doc), { _id: result.id });
         }
         catch (err) {
@@ -39,6 +40,32 @@ const authResolver = {
             };
         }
         catch (err) {
+            throw err;
+        }
+    },
+    updateUser: async ({ userInput }, req) => {
+        if (!req.isAuth) {
+            throw new Error("Authentication Error");
+        }
+        try {
+            // const updateData = {
+            //     phoneNumber: userInput?.phoneNumber,
+            //     nickname: userInput?.nickname,
+            //     borndate: userInput?.borndate,
+            //     gender: userInput?.gender,
+            //     name: userInput?.name,
+            //     selfIntroduction: userInput?.selfIntroduction,
+            //     careers: userInput?.careers,
+            // }
+            return await User.findOneAndUpdate({ _id: req.userId }, { $set: userInput }, { returnDocument: 'after' })
+                .then((result) => {
+                console.log(result);
+                req.session.user = result;
+                return Object.assign(Object.assign({}, result._doc), { _id: result.id });
+            });
+        }
+        catch (err) {
+            console.log(err);
             throw err;
         }
     },

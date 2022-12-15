@@ -1,5 +1,4 @@
-import { ObjectId } from "mongoose";
-
+import { ObjectId } from 'mongoose';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -86,6 +85,7 @@ export type RootMutation = {
   likeJob: Like;
   sendSMSCode: Result;
   unLikeJob: Job;
+  updateUser: User;
   verifySMSCode: Result;
 };
 
@@ -127,6 +127,11 @@ export type RootMutationSendSmsCodeArgs = {
 
 export type RootMutationUnLikeJobArgs = {
   jobId: Scalars['ID'];
+};
+
+
+export type RootMutationUpdateUserArgs = {
+  userInput?: InputMaybe<UserUpdateInput>;
 };
 
 
@@ -178,4 +183,14 @@ export type User = {
 export type UserInput = {
   nickname: Scalars['String'];
   phoneNumber: Scalars['String'];
+};
+
+export type UserUpdateInput = {
+  borndate?: InputMaybe<Scalars['String']>;
+  careers?: InputMaybe<Array<InputMaybe<Scalars['String']>>>;
+  gender?: InputMaybe<Scalars['String']>;
+  name?: InputMaybe<Scalars['String']>;
+  nickname?: InputMaybe<Scalars['String']>;
+  phoneNumber?: InputMaybe<Scalars['String']>;
+  selfIntroduction?: InputMaybe<Scalars['String']>;
 };

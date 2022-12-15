@@ -3,7 +3,6 @@ import { RootQueryJobArgs } from './../../../gql-types.d';
 import { RootMutationCreateJobArgs, RootMutationDeleteJobArgs } from "../../../gql-types";
 import Job from "../../models/job.js";
 import User from "../../models/user.js";
-import Like from '../../models/like.js';
 import {transformJob} from "./merge.js";
 
 const jobResolver = {

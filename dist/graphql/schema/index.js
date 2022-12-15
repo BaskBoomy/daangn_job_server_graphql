@@ -71,6 +71,16 @@ export default buildSchema(`
             nickname: String!
         }
 
+        input UserUpdateInput{
+            phoneNumber: String
+            nickname: String
+            borndate: String
+            gender: String
+            name: String
+            selfIntroduction: String
+            careers: [String]
+        }
+
         type RootQuery {
             jobs: [Job!]!
             applys: [Apply!]!
@@ -82,6 +92,7 @@ export default buildSchema(`
 
         type RootMutation {
             createUser(userInput: UserInput): User
+            updateUser(userInput: UserUpdateInput): User!
             createJob(jobInput: JobInput): Job
             deleteJob(jobId: String): Job!
             applyJob(jobId: ID!): Apply!
