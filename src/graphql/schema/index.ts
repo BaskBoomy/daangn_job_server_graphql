@@ -30,7 +30,6 @@ export default buildSchema(`
             isShortJob: Boolean!
             jobOfferer: User!
         }
-
         type User {
             _id : ID! 
             phoneNumber: String!
@@ -44,10 +43,13 @@ export default buildSchema(`
             appliedJobs: [Job!]!
             likedJobs: [Job!]!
         }
-
         type AuthData{
             userId: String!
             token: String!
+        }
+        type Result{
+            message: String!
+            code: Int!
         }
 
         input JobInput {
@@ -85,6 +87,8 @@ export default buildSchema(`
             cancelApply(applyId: ID!): Job!
             likeJob(jobId: ID!): Like!
             unLikeJob(jobId: ID!): Job!
+            sendSMSCode(phoneNumber: String!): Result!
+            verifySMSCode(phoneNumber: String!, code: String!): Result!
         }
 
         schema {

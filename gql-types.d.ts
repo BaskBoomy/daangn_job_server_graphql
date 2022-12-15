@@ -67,6 +67,12 @@ export type Like = {
   user: User;
 };
 
+export type Result = {
+  __typename?: 'Result';
+  code: Scalars['Int'];
+  message: Scalars['String'];
+};
+
 export type RootMutation = {
   __typename?: 'RootMutation';
   applyJob: Apply;
@@ -75,7 +81,9 @@ export type RootMutation = {
   createUser?: Maybe<User>;
   deleteJob: Job;
   likeJob: Like;
+  sendSMSCode: Result;
   unLikeJob: Job;
+  verifySMSCode: Result;
 };
 
 
@@ -109,8 +117,19 @@ export type RootMutationLikeJobArgs = {
 };
 
 
+export type RootMutationSendSmsCodeArgs = {
+  phoneNumber: Scalars['String'];
+};
+
+
 export type RootMutationUnLikeJobArgs = {
   jobId: Scalars['ID'];
+};
+
+
+export type RootMutationVerifySmsCodeArgs = {
+  code: Scalars['String'];
+  phoneNumber: Scalars['String'];
 };
 
 export type RootQuery = {
@@ -135,10 +154,12 @@ export type RootQueryUserArgs = {
 export type User = {
   __typename?: 'User';
   _id: Scalars['ID'];
+  appliedJobs: Array<Job>;
   borndate?: Maybe<Scalars['String']>;
   careers?: Maybe<Array<Maybe<Scalars['String']>>>;
   createdJobs: Array<Job>;
   gender?: Maybe<Scalars['String']>;
+  likedJobs: Array<Job>;
   name?: Maybe<Scalars['String']>;
   nickname: Scalars['String'];
   phoneNumber: Scalars['String'];

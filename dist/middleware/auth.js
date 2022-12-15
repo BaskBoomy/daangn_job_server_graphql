@@ -31,3 +31,12 @@ export const isAuth = (req, res, next) => {
     req.userId = decodedToken.id;
     next();
 };
+export const isProtect = (req, res, next) => {
+    const { user } = req.session;
+    if (!user) {
+        req.isAuth = false;
+        return next();
+    }
+    req.user = user;
+    next();
+};

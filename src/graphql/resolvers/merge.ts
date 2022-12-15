@@ -4,7 +4,7 @@ import User, { IUser } from "../../models/user.js";
 import {dateToString} from "../../helpers/date.js";
 import { ObjectId } from "mongoose";
 import { IJob } from "../../models/job.js";
-import { Job } from "../../../gql-types.js";
+import { Job, User as UserType } from "../../../gql-types.js";
 import JobModel from "../../models/job.js";
 import { IApply } from "../../models/apply.js";
 import { ILike } from "../../models/like.js";
@@ -81,4 +81,10 @@ export const transformApplyOrLike = (result:IApply|ILike) => {
         createdAt: dateToString(result._doc.createdAt),
         updatedAt: dateToString(result._doc.updatedAt),
     }
+}
+export const transformUser = (user:IUser)=> {
+    // return {
+    //     ...user._doc,
+    //     _id: user.id,
+    // }
 }

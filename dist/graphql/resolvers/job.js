@@ -1,19 +1,10 @@
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 import Job from "../../models/job.js";
 import User from "../../models/user.js";
 import { transformJob } from "./merge.js";
 const jobResolver = {
-    jobs: () => __awaiter(void 0, void 0, void 0, function* () {
+    jobs: async () => {
         try {
-            const jobs = yield Job.find();
+            const jobs = await Job.find();
             return jobs.map(transformJob); //db요청 모아서 한번에 처리 -> data loader api 사용
         }
         catch (err) {
@@ -21,8 +12,8 @@ const jobResolver = {
             throw err;
         }
         ;
-    }),
-    createJob: ({ jobInput }, req) => __awaiter(void 0, void 0, void 0, function* () {
+    },
+    createJob: async ({ jobInput }, req) => {
         if (!req.isAuth) {
             throw new Error("Authenticated Error");
         }
@@ -42,33 +33,33 @@ const jobResolver = {
         });
         let createdJob;
         try {
-            const result = yield job.save();
+            const result = await job.save();
             createdJob = transformJob(result);
-            const isExistUser = yield User.findById(req.userId);
+            const isExistUser = await User.findById(req.userId);
             if (!isExistUser) {
                 throw new Error('User is not exists');
             }
             isExistUser.createdJobs.push(job._id);
-            yield isExistUser.save();
+            await isExistUser.save();
             return createdJob;
         }
         catch (err) {
             console.log(err);
             throw err;
         }
-    }),
-    deleteJob: ({ jobId }) => __awaiter(void 0, void 0, void 0, function* () {
+    },
+    deleteJob: async ({ jobId }) => {
         try {
-            const job = yield Job.findById(jobId);
+            const job = await Job.findById(jobId);
             if (!job) {
                 throw new Error("Job is not exist");
             }
-            yield Job.deleteOne({ _id: jobId });
+            await Job.deleteOne({ _id: jobId });
             return job;
         }
         catch (err) {
             throw err;
         }
-    })
+    }
 };
 export default jobResolver;

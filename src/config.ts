@@ -23,9 +23,11 @@ export const config = {
     },
     redis:{
         username:required('REDIS_USERNAME'),
-        host:required('REDIS_HOST'),
-        port:required('REDIS_PORT'),
+        host:required('REDIS_LOCAL_HOST'),
+        port:parseInt(required('REDIS_LOCAL_PORT')),
         password:required('REDIS_PASSWORD'),
+        maxAge:parseInt(required('REDIS_MAXAGE')),
+        sessionSecret:required('SESSION_SECRET')
     },
     naverCloud:{
         serviceId:required('NAVER_CLOUD_SERVICE_ID'),
