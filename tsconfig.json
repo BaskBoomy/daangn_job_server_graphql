@@ -10,7 +10,7 @@
     "forceConsistentCasingInFileNames": true, 
     "noImplicitAny": true,                    
     "strict": true, 
-    "allowJs": true,
+    // "allowJs": true,
     "typeRoots": ["./node_modules/@types"],
   }
 }
