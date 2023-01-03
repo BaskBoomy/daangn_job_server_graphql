@@ -1,13 +1,16 @@
 import express from "express";
+import {ApolloServer} from "@apollo/server";
+import { expressMiddleware } from '@apollo/server/express4';
+import { startStandaloneServer } from '@apollo/server/standalone';
+
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
-import {graphqlHTTP } from 'express-graphql';
 import mongoose from "mongoose";
 import session from "express-session";
 import connectRedis from "connect-redis";
 
-import graphQLSchema from './graphql/schema/index.js';
-import graphQLResolvers from "./graphql/resolvers/index.js";
+import typeDefs from './graphql/schema/index.js';
+import resolvers from "./graphql/resolvers/index.js";
 import {isAuth} from './middleware/auth.js';
 import { config } from "./config.js";
 import { createClient } from "redis";
@@ -23,30 +26,39 @@ redisClient.connect()
     console.log("Redis Connected");
 });
 
+interface MyContext {
+    token?: String;
+  }
 const app = express();
-app.use(express.urlencoded({extended: true}));
-app.use(session({
-    secret:'secret',
-    store:new RedisStore({
-        client:redisClient
-    }),
-    cookie:{
-        secure:false,
-        httpOnly:true,
-        maxAge:config.redis.maxAge,
-    },
-    resave:false,
-    saveUninitialized:false,
-}));
-app.use(bodyParser.json());
-app.use(cookieParser());
+const server = new ApolloServer<MyContext>({ 
+    typeDefs,
+    resolvers,
+});
+await server.start();
 
-app.use(isAuth);
-app.use('/daangn-job', graphqlHTTP({
-    schema:graphQLSchema,
-    rootValue: graphQLResolvers,
-    graphiql: true
-}));
+app.use(
+    '/daangn-job',
+    express.urlencoded({extended: true}),
+    session({
+        secret:'secret',
+        store:new RedisStore({
+            client:redisClient
+        }),
+        cookie:{
+            secure:false,
+            httpOnly:true,
+            maxAge:config.redis.maxAge,
+        },
+        resave:false,
+        saveUninitialized:false,
+    }),
+    bodyParser.json(),
+    cookieParser(),
+    expressMiddleware(server,{
+        context: async ({ req }) => ({ token: req.headers.token }),
+    })
+);
+
 
 mongoose.set('strictQuery', true);
 mongoose

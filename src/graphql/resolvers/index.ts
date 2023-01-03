@@ -5,10 +5,11 @@ import likeResolvers from "./like.js";
 import locationResolvers from "./location.js";
 
 const rootResolver = {
-    ...authResolver,
-    ...jobResolver,
-    ...applyResolver,
-    ...likeResolvers,
-    ...locationResolvers
+    Query:{
+        ...authResolver,
+        ...jobResolver,
+        ...applyResolver,
+        ...likeResolvers,
+        ...locationResolvers}
 }
 export default rootResolver;

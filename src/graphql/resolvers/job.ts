@@ -83,7 +83,7 @@ const jobResolver = {
             throw err;
         }
     },
-    searchJob: async({searchType}:RootQuerySearchJobArgs) => {
+    searchJob: async(_:any, {searchType}:RootQuerySearchJobArgs) => {
         try {
             //조건이 존재하지 않을 경우
             if (searchType == null) {
@@ -119,8 +119,8 @@ const jobResolver = {
                         console.log(err);
                     })
             }
-        }catch(error) {
-            
+        }catch(err) {
+            console.error(err);
         }
     }
 

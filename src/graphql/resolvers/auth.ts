@@ -31,14 +31,13 @@ const authResolver = {
             throw err;
         }
     },
-    login: async ({phoneNumber}:RootQueryLoginArgs, req:Request) => {
+    login: async (_:any, {phoneNumber}:RootQueryLoginArgs) => {
         try{
             const user = await User.findOne({phoneNumber:phoneNumber});
             if(!user){
                 throw new Error('User does not exist'); 
             }
             
-            req.session.user = user;
             const token = createJwtToken(user.id);
             return {
                 userId: user.id,

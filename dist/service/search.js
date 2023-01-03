@@ -66,5 +66,6 @@ function getQuery(type, data) {
                     }
                 }
             };
+        default: { }
     }
 }

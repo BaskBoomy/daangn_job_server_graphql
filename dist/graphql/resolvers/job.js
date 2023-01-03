@@ -76,7 +76,7 @@ const jobResolver = {
             throw err;
         }
     },
-    searchJob: async ({ searchType }) => {
+    searchJob: async (_, { searchType }) => {
         try {
             //조건이 존재하지 않을 경우
             if (searchType == null) {
@@ -109,7 +109,8 @@ const jobResolver = {
                 });
             }
         }
-        catch (error) {
+        catch (err) {
+            console.error(err);
         }
     }
 };

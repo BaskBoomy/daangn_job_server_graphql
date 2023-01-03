@@ -15,7 +15,12 @@ export function getSearchSetting(searchType:any) {
     return setting;
 }
 
-function getQuery(type:string, data:any):any {
+type SearchTime = {
+    startTime:string;
+    endTime:string;
+}
+type QueryResult = Object | [Object] | undefined;
+function getQuery<T extends SearchTime>(type:string, data:T):QueryResult {
     switch (type) {
         case 'isShortJob':
             return {
@@ -69,5 +74,6 @@ function getQuery(type:string, data:any):any {
                     }
                 }
             }
+        default : {}
     }
 }

@@ -1,6 +1,5 @@
-import { buildSchema } from "graphql";
-import { gql} from "apollo-server";
-export default buildSchema(`
+
+export default `
     type Like{
         _id: ID!
         job: Job!
@@ -108,7 +107,7 @@ export default buildSchema(`
         currentX: Float
         currentY: Float
     }
-    type RootQuery {
+    type Query {
         me: User!
         login(phoneNumber: String!): AuthData
         user(userId: String!): User!
@@ -118,9 +117,6 @@ export default buildSchema(`
         applys: [Apply!]!
         getNearAddress(coordinate: Coordinate!):[Location]!
         searchLocation(searchText: String!):[Location]!
-    }
-
-    type RootMutation {
         createUser(userInput: UserInput): User
         updateUser(userInput: UserUpdateInput): User!
         createJob(jobInput: JobInput): Job
@@ -132,9 +128,4 @@ export default buildSchema(`
         sendSMSCode(phoneNumber: String!): Result!
         verifySMSCode(phoneNumber: String!, code: String!): Result!
     }
-
-    schema {
-        query: RootQuery
-        mutation: RootMutation
-    }
-`)
+`
